@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Configuration
-version="0.1.0"
+version="0.2.0"
 # Set the default hosts file to parse. Can be overwritten with --file.
 hosts_file='/etc/hosts'
 # Set the default output file to write to. Can be specified with
@@ -126,7 +126,7 @@ while [ $# -gt 0 ]; do
 	case $1 in
 		-f|--file) hosts_file="$2"; shift;;
 		-F|--free-only) free_only=true;;
-		-o|--output) output_file="$2"; shift;;
+		-o|--out) output_file="$2"; shift;;
 		-p|--print) print=true;;
 		-h|--help) help=true;;
 		-u|--inuse) inuse=true;;
@@ -162,7 +162,7 @@ fi
 if [[ $help ]]; then
 	printf "%s\n\n" "$0 (v$version) help page. This tool helps you analyze Linux hosts files."
 	printf "%s\n" "-f|--file <path>     Specify hosts input file (Default: $hosts_file)"
-	printf "%s\n" "-o|--output <path>   Specify output file path (Default: $output_file)"
+	printf "%s\n" "-o|--out <path>   Specify output file path (Default: $output_file)"
 	printf "%s\n" "-s|--subnet          Specify the /16 subnet to check (Default: $subnet)"
 	printf "%s\n" "-F|--free-only       Print only completely free /24 blocks"
 	printf "%s\n" "-p|--print           Print to stdout instead of a file"
@@ -171,13 +171,23 @@ if [[ $help ]]; then
 	exit 0
 fi
 
+# Blank file if file output selected and file exists
+if [[ -f $output_file && -z $print ]]; then
+	printf "" > $output_file
+fi
+
 # Print header
 if [[ $inuse ]]; then
 	p2output "Summary of IP addresses IN USE as defined in $hosts_file:"
 	p2output ""
 else
-	p2output "Summary of FREE IP addresses in $hosts_file:"
-	p2output ""
+	if [[ $free_only ]]; then
+		p2output "Completely free /24 address blocks in $hosts_file:"
+		p2output ""	
+	else
+		p2output "Summary of FREE IP addresses in $hosts_file:"
+		p2output ""
+	fi
 fi
 
 # Check /24 blocks

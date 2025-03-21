@@ -11,7 +11,7 @@ Several flags are available:
 | Option                | Description                                                         |
 |-----------------------|---------------------------------------------------------------------|
 | `-f <path>`, `--file <path>` | Specify hosts input file (Default: `/etc/hosts`)                    |
-| `-o <path>`, `--output <path>` | Specify output file path (Default: `./freeips.sh_%Y-%m-%d_%H-%M-%S`) |
+| `-o <path>`, `--out <path>` | Specify output file path (Default: `./freeips.sh_%Y-%m-%d_%H-%M-%S`) |
 | `-s`, `--subnet`      | Specify the /16 subnet to check (Default: `^10.81.`)               |
 | `-F`, `--free-only`   | Print only completely free /24 blocks                              |
 | `-p`, `--print`       | Print to stdout instead of a file                                  |
@@ -23,5 +23,5 @@ Several flags are available:
 ```
 ./freeips.sh -p -F -f hosts.txt
 ./freeips.sh -u
-./freeips --file ~/hosts.new --output output.txt
+./freeips --file ~/hosts.new --out output.txt
 ```
