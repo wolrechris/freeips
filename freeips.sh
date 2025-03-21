@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Configuration
-version="0.0.1"
+version="0.1.0"
 # Set the default hosts file to parse. Can be overwritten with --file.
 hosts_file='/etc/hosts'
 # Set the default output file to write to. Can be specified with
@@ -13,6 +13,7 @@ inuse=""
 # Regex to identify subnet (must identify subnet of size /16 and
 # include two dots for separation)
 subnet="^10.81."
+# Initialize some variables
 free_only=""
 used_ips=()
 used_hosts=()
@@ -26,7 +27,6 @@ parse_file () {
 	# save used ips and hosts into arrays
 	used_ips=($(echo "$input_sorted" | awk '{print $1}'))
 	used_hosts=($(echo "$input_sorted" | awk '{$1=""; sub(/^ /, ""); print}'))
-
 }
 
 ips_in_block () {
@@ -53,13 +53,10 @@ print_block_ips () {
 	while [[ $found_used -lt $3 ]]; do
 		# Set current IP only if it exists in used_ips_sub
 		current_ip=$(echo "$used_ips_sub" | grep -o -E "^${prefix}\.${i}$")
-		#echo "$prefix.$i matched $current_ip" with regex "^${prefix}\.${i}$"
-		#echo "hits_first_cons: $hits_first_cons"
 		# Check if ip is a hit, depending on if searching for
 		# used or free
 		if [[ "$current_ip" ]]; then
 			found_used=$(($found_used + 1))
-			#echo "found $found_used of $3 used ips."
 			if [[ "$2" == "used" ]]; then
 				# searching USED / something found
 				if [[ -z $hits_first_cons ]]; then
@@ -92,7 +89,6 @@ print_block_ips () {
 	if [[ $hits_first_cons ]]; then
 		print_range "$hits_first_cons" "$prefix.$(($i - 1))" "h"
 	fi
-
 }
 
 print_range () {
@@ -124,7 +120,6 @@ p2output () {
 		printf "%s\n" "$1" >> "$output_file"
 	fi
 }
-
 
 # Parse input paramenters
 while [ $# -gt 0 ]; do
@@ -197,7 +192,7 @@ for i in {0..255}; do
 			first_cons_free=""
 		fi
 		# Print the summary for blocks that are not empty
-		if [[ $used_in_block != 0 ]]; then
+		if [[ $used_in_block != 0 && -z $free_only ]]; then
 			if [ $inuse ]; then
 				p2output "${subnet:1}$i.0/24: $(($used_in_block)) IPs used"
 				print_block_ips $i "used" $used_in_block
@@ -214,5 +209,3 @@ for i in {0..255}; do
 
 	fi
 done
-
-# "${subnet:1}$i.0/24: $(ips_in_block $i)"
