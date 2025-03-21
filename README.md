@@ -6,10 +6,22 @@ Due to the specific usecase that this tool was developed for, it is mainly inten
 
 ## Usage
 
-* -f|--file <path>     Specify hosts input file (Default: /etc/hosts)
-* -o|--output <path>   Specify output file path (Default: ./freeips. sh_2025-03-21_16-26-05.log)
-* -s|--subnet          Specify the /16 subnet to check (Default: ^10.81.)
-* -F|--free-only       Print only completely free /24 blocks
-* -p|--print           Print to stdout instead of a file
-* -h|--help            Show this page
-* -u|--inuse           Show ip addresses that are in use
+Several flags are available:
+
+| Option                | Description                                                         |
+|-----------------------|---------------------------------------------------------------------|
+| `-f`, `--file <path>` | Specify hosts input file (Default: `/etc/hosts`)                    |
+| `-o`, `--output <path>` | Specify output file path (Default: `./freeips.sh_%Y-%m-%d_%H-%M-%S`) |
+| `-s`, `--subnet`      | Specify the /16 subnet to check (Default: `^10.81.`)               |
+| `-F`, `--free-only`   | Print only completely free /24 blocks                              |
+| `-p`, `--print`       | Print to stdout instead of a file                                  |
+| `-h`, `--help`        | Show this page                                                     |
+| `-u`, `--inuse`       | Show IP addresses that are in use                                  |
+
+### Examples:
+
+```
+./freeips.sh -p -F -f hosts.txt
+./freeips.sh -u
+./freeips --file ~/hosts.new --out output.txt
+```
